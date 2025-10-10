@@ -49,31 +49,30 @@ FileName = function()
 	return filepath
 end
 
-function Pos()
-  local current = vim.fn.line('.')
-  local total = vim.fn.line('$')
-
-  if current == 1 then
-    return 'Top'
-  elseif current == total then
-    return 'Bot'
+function Encoding()
+  local encoding
+  if vim.bo.fileencoding ~= "" then
+	encoding = vim.bo.fileencoding
   else
-    return string.format('%d%%', math.floor((current / total) * 100))
+	encoding = vim.o.encoding
   end
+  return encoding
 end
 
 StatusLine = function()
-  local left = string.format('%s | %s %s',
-    Mode(),
+  local left = string.format(' %s %s',
+--    Mode(), -- disable mode for no
     FileName(),
     IsModified())
 
-  local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or "utf-8"
+--  local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or "utf-8"
+  local encoding = Encoding()
   local filetype = vim.bo.filetype ~= "" and vim.bo.filetype or "no ft"
 
-  local thing = string.format(' %d,%d ',
+  local thing = string.format(' %d,%d       %s ',
     vim.fn.line('.'),
-    vim.fn.col('.'))
+    vim.fn.col('.'),
+	encoding)
 
 	local right = thing
 
