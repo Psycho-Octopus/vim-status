@@ -2,8 +2,8 @@
 -- format:
 -- left: MODE | name | modified?
 -- right: encoding | file type | total line numbers: line number: column
-
--- Color for the '[+]' that pops up when you havnt saved a file
+--
+-- Color for the '[+]'
 vim.api.nvim_set_hl(0, "StatusLineModified", { fg = "#f38ba8", bold = true })
 
 local mode_map = {
@@ -59,6 +59,15 @@ function Encoding()
   return encoding
 end
 
+function Git()
+  local branch = vim.fn.FugitiveHead()
+  if branch == '' then
+	return ''
+  else
+	return '       git(' .. branch .. ')'
+  end
+end
+
 StatusLine = function()
   local left = string.format(' %s %s',
 --    Mode(), -- disable mode for no
@@ -69,10 +78,10 @@ StatusLine = function()
   local encoding = Encoding()
   local filetype = vim.bo.filetype ~= "" and vim.bo.filetype or "no ft"
 
-  local thing = string.format(' %d,%d       %s ',
+  local thing = string.format(' %d,%d %s',
     vim.fn.line('.'),
     vim.fn.col('.'),
-	encoding)
+	Git())
 
 	local right = thing
 
